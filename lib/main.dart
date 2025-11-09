@@ -1,308 +1,747 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const TanshiuqRoot());
+  runApp(const TanishqApp());
 }
 
-class TanshiuqRoot extends StatelessWidget {
-  const TanshiuqRoot({super.key});
+class TanishqApp extends StatelessWidget {
+  const TanishqApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return CartProvider(
-      controller: CartController(),
-      child: const TanshiuqApp(),
-    );
-  }
-}
-
-class CartController extends ChangeNotifier {
-  int _count = 0;
-  int get count => _count;
-
-  void add(int quantity) {
-    if (quantity <= 0) return;
-    _count += quantity;
-    notifyListeners();
-  }
-}
-
-class CartProvider extends InheritedNotifier<CartController> {
-  const CartProvider({
-    super.key,
-    required CartController controller,
-    required super.child,
-  }) : super(notifier: controller);
-
-  static CartController of(BuildContext context) {
-    final provider = context.dependOnInheritedWidgetOfExactType<CartProvider>();
-    assert(provider != null, 'CartProvider not found in context');
-    return provider!.notifier!;
-  }
-}
-
-class TanshiuqApp extends StatelessWidget {
-  const TanshiuqApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    const seed = Color(0xFFB88C4A);
+    const seed = Color(0xFF8D493A);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Tanshiuq Couture Jewellery',
+      title: 'Tanishq',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: seed,
-          brightness: Brightness.dark,
-        ).copyWith(
-          surface: const Color(0xFF17151D),
-          onSurface: Colors.white,
-          primaryContainer: seed.withOpacity(0.25),
-          onPrimaryContainer: Colors.white,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF110F16),
-        textTheme: ThemeData.dark().textTheme.apply(
-              fontFamily: 'Serif',
-              bodyColor: Colors.white,
-              displayColor: Colors.white,
-            ),
+        colorScheme: ColorScheme.fromSeed(seedColor: seed),
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Georgia',
       ),
-      home: const TanshiuqHome(),
+      home: const HomePage(),
     );
   }
 }
 
-class Product {
-  const Product({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.rating,
-    required this.reviewCount,
-    required this.images,
-    required this.description,
-    required this.highlights,
-    required this.materials,
-    required this.story,
-  });
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  final String id;
-  final String name;
-  final String category;
-  final double price;
-  final double rating;
-  final int reviewCount;
-  final List<String> images;
-  final String description;
-  final List<String> highlights;
-  final Map<String, String> materials;
-  final String story;
+  @override
+  State<HomePage> createState() => _HomePageState();
 }
 
-const _heroGradient = LinearGradient(
-  colors: [Color(0xFF201825), Color(0xFF110F16)],
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
-);
+class _HomePageState extends State<HomePage> {
+  final PageController _heroController = PageController();
+  int _heroIndex = 0;
+  int _currentTab = 0;
 
-const _accentGradient = LinearGradient(
-  colors: [Color(0xFFB88C4A), Color(0xFFC8A86C)],
-);
+  @override
+  void initState() {
+    super.initState();
+    _heroController.addListener(() {
+      final page = _heroController.page?.round();
+      if (page != null && page != _heroIndex) {
+        setState(() => _heroIndex = page);
+      }
+    });
+  }
 
-class TanshiuqHome extends StatelessWidget {
-  const TanshiuqHome({super.key});
-
-  static final List<Product> _curated = [
-    const Product(
-      id: 'aurora-tiara',
-      name: 'Aurora Celestial Tiara',
-      category: 'Signature Couture',
-      price: 3899,
-      rating: 4.9,
-      reviewCount: 128,
-      images: [
-        'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=1400&q=80',
-        'https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?auto=format&fit=crop&w=1400&q=80',
-        'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80',
-      ],
-      description:
-          'A regal symphony of hand-cut moonstones and diamonds, elevated with 18k rose gold filigree detailing.',
-      highlights: [
-        'Hand-set Aurora Blue moonstones',
-        '18K recycled rose gold',
-        'Invisible diamond pavé halo',
-      ],
-      materials: {
-        'Metal': '18k Rose Gold (conflict-free)',
-        'Gemstone': 'Aurora Moonstone & DEF Diamonds',
-        'Artistry': '104 hours of handcrafting',
-      },
-      story:
-          'Inspired by twilight over the Tanshiuq ateliers in Jaipur, the Aurora Celestial Tiara honours constellations that guide modern royalty. Each moonstone is precision set to mirror the gentle gradient of dusk.',
-    ),
-    const Product(
-      id: 'nocturne-ears',
-      name: 'Nocturne Cascade Earrings',
-      category: 'Evening Muse',
-      price: 1299,
-      rating: 4.8,
-      reviewCount: 86,
-      images: [
-        'https://images.unsplash.com/photo-1529933037704-7208bc65ed0d?auto=format&fit=crop&w=1200&q=80',
-        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80',
-      ],
-      description:
-          'Asymmetric cascades of midnight sapphires and rare Tahitian pearls floating on whisper-fine chains.',
-      highlights: [
-        'Floating pearl illusion setting',
-        'Hand-polished midnight sapphires',
-        'Ultra-light titanium core',
-      ],
-      materials: {
-        'Metal': '18k Blackened White Gold',
-        'Gemstone': 'Tahitian Pearls & AAA Sapphires',
-        'Length': '11.4 cm drop',
-      },
-      story:
-          'The Nocturne Cascade celebrates the poetry of midnight galas. Hand-articulated links create a weightless motion that dances with every turn.',
-    ),
-  ];
-
-  static final List<Map<String, String>> _collections = [
-    {
-      'title': 'Celestial Heirlooms',
-      'subtitle': 'One-of-a-kind constellations',
-      'image':
-          'https://images.unsplash.com/photo-1541781286675-059aa460546f?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-      'title': 'Modern Maharani',
-      'subtitle': 'Seven-piece bridal curation',
-      'image':
-          'https://images.unsplash.com/photo-1542382209-5c2c43004c21?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-      'title': 'Everyday Radiance',
-      'subtitle': 'Effortless layering essentials',
-      'image':
-          'https://images.unsplash.com/photo-1530023367847-a683933f4175?auto=format&fit=crop&w=1200&q=80',
-    },
-  ];
+  @override
+  void dispose() {
+    _heroController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      extendBody: true,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(gradient: _heroGradient),
-        child: CustomScrollView(
-          slivers: [
-            _buildHeroAppBar(context),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+      drawer: const _SideDrawer(),
+      body: IndexedStack(
+        index: _currentTab,
+        children: [
+          _buildHomeTab(context),
+          _buildJewPlansTab(context),
+          _buildDigiGoldTab(context),
+          _buildCategoriesTab(context),
+          _buildGiftingTab(context),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFF8D493A),
+        unselectedItemColor: Colors.grey.shade600,
+        currentIndex: _currentTab,
+        onTap: (index) => setState(() => _currentTab = index),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.diamond_outlined), label: 'Jew Plans'),
+          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_outlined), label: 'Digi Gold'),
+          BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'Categories'),
+          BottomNavigationBarItem(icon: Icon(Icons.card_giftcard), label: 'Gifting'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeTab(BuildContext context) {
+    return SafeArea(
+      key: const ValueKey('home-tab'),
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 90),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      Builder(
+                        builder: (ctx) => _IconCircle(
+                          icon: Icons.menu,
+                          onTap: () => Scaffold.of(ctx).openDrawer(),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Tanishq',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 1.2,
+                              ),
+                        ),
+                      ),
+                      _IconCircle(icon: Icons.notifications_none, onTap: () {}),
+                      const SizedBox(width: 8),
+                      _IconCircle(icon: Icons.favorite_border, onTap: () {}),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: Colors.brown.shade100),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.search, color: Colors.grey.shade600),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Search for jewellery on Tanishq',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              Icon(Icons.camera_alt_outlined, color: Colors.grey.shade600),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      _IconCircle(icon: Icons.shopping_bag_outlined, onTap: () {}),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 220,
+                  child: PageView(
+                    controller: _heroController,
+                    children: const [
+                      _HeroCard(
+                        image: 'images/1tg.png',
+                        title: 'Tanishq presents\nFloral Bloom',
+                        subtitle: 'SHOP NOW',
+                      ),
+                      _HeroCard(
+                        image: 'images/2tg.png',
+                        title: 'Explore Our Gold\nBestsellers',
+                        subtitle: 'EXPLORE',
+                      ),
+                      _HeroCard(
+                        image: 'images/3tg.png',
+                        title: 'Celebrate Every\nFestive Moment',
+                        subtitle: 'SHOP NOW',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _Dots(current: _heroIndex, total: 3),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF2E9DD),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.login, color: Color(0xFF8D493A)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Login to get exclusive deals & offers',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Icon(Icons.close, color: Color(0xFF8D493A)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 120,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      _CategoryCard(title: 'Festive', image: 'images/1tg.png'),
+                      _CategoryCard(title: 'Earrings', image: 'images/2tg.png'),
+                      _CategoryCard(title: 'Pendants', image: 'images/3tg.png'),
+                      _CategoryCard(title: 'Gold Coin', image: 'images/1tg.png'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Stunning Every Ear',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Look at our brand new earring collection just for you',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.grey.shade700),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: const [
+                      Expanded(
+                        child: _HighlightTile(
+                          title: 'Earrings',
+                          image: 'images/2tg.png',
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: _HighlightTile(
+                          title: 'Rings',
+                          image: 'images/3tg.png',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Recommended For You',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 220,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _ProductTile(
+                        image: 'images/1tg.png',
+                        title: 'Round Gold Jali Work Stud Earrings',
+                        price: '₹12 399',
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ProductDetailPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 12),
+                      const _ProductTile(
+                        image: 'images/2tg.png',
+                        title: 'Florid Filigree Stud Earrings',
+                        price: '₹11 899',
+                      ),
+                      const SizedBox(width: 12),
+                      const _ProductTile(
+                        image: 'images/3tg.png',
+                        title: 'Rosette Bloom Stud Earrings',
+                        price: '₹13 199',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Positioned(
+            top: 220,
+            right: 0,
+            child: _LiveChatPill(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildJewPlansTab(BuildContext context) {
+    final plans = [
+      {
+        'title': 'Golden Harvest Plan',
+        'description': 'Save a little every month and redeem the full value in handcrafted jewellery of your choice.',
+        'highlights': [
+          'Start with just ₹3 000/month',
+          'Flexible tenure from 6 to 36 months',
+          'Get up to 75% of your 12th installment as a loyalty bonus'
+        ],
+      },
+      {
+        'title': 'Anuttara Gold Savings',
+        'description': 'Grow your gold portfolio with assured purity and transparent savings.',
+        'highlights': [
+          'Pure 22KT BIS-hallmarked gold every time',
+          'Pause or top-up payments without penalties',
+          'Dedicated jewellery consultant on maturity'
+        ],
+      },
+    ];
+
+    return SafeArea(
+      key: const ValueKey('plans-tab'),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 100),
+        children: [
+          Text(
+            'Plan Your Dream Jewellery',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Choose a gold savings plan that keeps every celebration covered.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 24),
+          for (final plan in plans)
+            _buildInfoCard(
+              context: context,
+              title: plan['title']! as String,
+              description: plan['description']! as String,
+              highlights: List<String>.from(plan['highlights']! as List),
+              icon: Icons.savings_outlined,
+            ),
+          _buildInfoCard(
+            context: context,
+            title: 'Smart Gold SIP',
+            description: 'Automate your monthly investment in 24KT digital gold and convert to jewellery anytime.',
+            highlights: const [
+              'Start with ₹1 000 SIP',
+              'Live gold rate locking',
+              'Instant redemption for store or online purchases'
+            ],
+            icon: Icons.timeline_outlined,
+            badge: 'Trending',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDigiGoldTab(BuildContext context) {
+    return SafeArea(
+      key: const ValueKey('digi-tab'),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 100),
+        children: [
+          Text(
+            'Digi Gold by Tanishq',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Buy, store and sell certified 24KT gold instantly at live market rates.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 24),
+          _buildInfoCard(
+            context: context,
+            title: 'Live Tracking Dashboard',
+            description: 'Monitor your digital gold weight and average cost in real time with smart alerts.',
+            highlights: const [
+              'Track Gram-wise growth',
+              'Set price alerts for instant action',
+              'Download investment statements'
+            ],
+            icon: Icons.show_chart,
+          ),
+          _buildInfoCard(
+            context: context,
+            title: 'Convert To Jewellery',
+            description: 'Exchange your Digi Gold balance for any design online or across 350+ stores.',
+            highlights: const [
+              'Zero conversion charges',
+              'Exclusive digi-to-jewel offers',
+              'Doorstep delivery with insurance'
+            ],
+            icon: Icons.swap_horiz,
+          ),
+          _buildInfoCard(
+            context: context,
+            title: 'Secure Locker',
+            description: 'Your gold is stored in insured vaults with daily audits and BIS certification.',
+            highlights: const [
+              'Free insured storage',
+              'Sell back anytime at live rate',
+              '100% RBI compliant trusteeship'
+            ],
+            icon: Icons.lock_outline,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoriesTab(BuildContext context) {
+    final categories = [
+      {'title': 'Necklaces', 'image': 'images/1tg.png'},
+      {'title': 'Bangles', 'image': 'images/2tg.png'},
+      {'title': 'Bracelets', 'image': 'images/3tg.png'},
+      {'title': 'Mangalsutras', 'image': 'images/1tg.png'},
+      {'title': 'Gold Coins', 'image': 'images/2tg.png'},
+      {'title': 'Kids Collection', 'image': 'images/3tg.png'},
+    ];
+    final width = MediaQuery.of(context).size.width;
+    final cardWidth = (width - 16 * 2 - 12) / 2;
+
+    return SafeArea(
+      key: const ValueKey('categories-tab'),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 100),
+        children: [
+          Text(
+            'Shop By Category',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Discover handcrafted gold designs curated for every milestone.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 24),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: categories
+                .map(
+                  (category) => SizedBox(
+                    width: cardWidth,
+                    child: _CategoryPoster(
+                      title: category['title']! as String,
+                      image: category['image']! as String,
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGiftingTab(BuildContext context) {
+    final giftingIdeas = [
+      {
+        'title': 'Wedding Radiance Hampers',
+        'description': 'Curated bridal jewellery boxes with matching hair ornaments, bangles and gift vouchers.',
+        'highlights': [
+          'Select from Rose, Heritage & Minimal trousseaus',
+          'Include a personalised message card',
+          'Free doorstep delivery in premium packaging'
+        ],
+      },
+      {
+        'title': 'Festive Gold Coins',
+        'description': 'Bless your loved ones with auspicious coins crafted in 24KT gold and embossed motifs.',
+        'highlights': [
+          'Available in 1g to 50g denominations',
+          'Custom engraving available',
+          'Complimentary velvet keepsake box'
+        ],
+      },
+      {
+        'title': 'Corporate Gratitude Sets',
+        'description': 'Choose from signature gold-plated pens, bookmarks and desk accents for milestone celebrations.',
+        'highlights': [
+          'Bulk pricing with personalisation',
+          'Dedicated gifting concierge',
+          'Ships within 5 working days'
+        ],
+      },
+    ];
+
+    return SafeArea(
+      key: const ValueKey('gifting-tab'),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 100),
+        children: [
+          Text(
+            'Tanishq Gifting Studio',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Thoughtful gold gifts that celebrate every milestone, big or small.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
+          ),
+          const SizedBox(height: 24),
+          for (final idea in giftingIdeas)
+            _buildInfoCard(
+              context: context,
+              title: idea['title']! as String,
+              description: idea['description']! as String,
+              highlights: List<String>.from(idea['highlights']! as List),
+              icon: Icons.card_giftcard,
+            ),
+          _buildInfoCard(
+            context: context,
+            title: 'Virtual Gifting Appointment',
+            description: 'Book a stylist-assisted video call to curate surprise jewellery hampers with live try-ons.',
+            highlights: const [
+              'Schedule within 2 hours',
+              'Coordinate group gifting effortlessly',
+              'Global delivery with insurance'
+            ],
+            icon: Icons.support_agent,
+            badge: 'Concierge',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard({
+    required BuildContext context,
+    required String title,
+    required String description,
+    required List<String> highlights,
+    IconData icon = Icons.diamond_outlined,
+    String? badge,
+  }) {
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F4EE),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.brown.shade100),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF8D493A),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: Colors.white, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 32),
-                    _buildEditorialCard(colorScheme),
-                    const SizedBox(height: 32),
-                    _SectionHeading(
-                      title: 'Atelier Highlights',
-                      actionLabel: 'View all',
-                      onTap: () {},
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        if (badge != null)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEFD8C7),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              badge!,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                    color: const Color(0xFF8D493A),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      height: 320,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(right: 24),
-                        itemBuilder: (context, index) {
-                          final product = _curated[index % _curated.length];
-                          return _ProductCard(product: product);
-                        },
-                        separatorBuilder: (_, __) => const SizedBox(width: 20),
-                        itemCount: _curated.length,
-                      ),
+                    const SizedBox(height: 6),
+                    Text(
+                      description,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700, height: 1.4),
                     ),
-                    const SizedBox(height: 32),
-                    _SectionHeading(
-                      title: 'Signature Collections',
-                      actionLabel: 'Explore',
-                      onTap: () {},
-                    ),
-                    const SizedBox(height: 16),
-                    _CollectionGrid(collections: _collections),
-                    const SizedBox(height: 32),
-                    _SectionHeading(
-                      title: 'Concierge Moments',
-                      actionLabel: 'Book now',
-                      onTap: () {},
-                    ),
-                    const SizedBox(height: 18),
-                    _ConciergeCard(colorScheme: colorScheme),
-                    const SizedBox(height: 48),
                   ],
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          for (final highlight in highlights)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.circle, size: 8, color: Color(0xFF8D493A)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      highlight,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey.shade800, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
+}
 
-  SliverAppBar _buildHeroAppBar(BuildContext context) {
-    final cart = CartProvider.of(context);
-    return SliverAppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      pinned: true,
-      expandedHeight: 240,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
+class _IconCircle extends StatelessWidget {
+  const _IconCircle({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          border: Border.all(color: Colors.brown.shade100),
+          boxShadow: const [
+            BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+          ],
+        ),
+        child: Icon(icon, color: Colors.grey.shade700, size: 20),
+      ),
+    );
+  }
+}
+
+class _HeroCard extends StatelessWidget {
+  const _HeroCard({required this.image, required this.title, required this.subtitle});
+
+  final String image;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
           fit: StackFit.expand,
           children: [
-            _NetImage(
-              url:
-                  'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=1400&q=80',
-              fit: BoxFit.cover,
-              color: Colors.black.withOpacity(0.35),
-              colorBlendMode: BlendMode.darken,
-            ),
-            Container(
-              decoration: const BoxDecoration(
+            Image.asset(image, fit: BoxFit.cover),
+            DecoratedBox(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Color(0xFF110F16)],
+                  colors: [Colors.black.withOpacity(0.15), Colors.black.withOpacity(0.55)],
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 96, 24, 24),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'Tanshiuq',
-                    style: TextStyle(
-                      fontSize: 44,
-                      letterSpacing: 6,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                   ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Couture jewellery for luminous souls. Crafted in Jaipur, adored globally.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFFE8D9C3),
-                      height: 1.5,
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Text(
+                      subtitle,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: const Color(0xFF8D493A), letterSpacing: 1.2),
                     ),
                   ),
                 ],
@@ -310,121 +749,72 @@ class TanshiuqHome extends StatelessWidget {
             ),
           ],
         ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            _FrostedIconButton(
-              icon: Icons.search,
-              onTap: () {},
-            ),
-            const SizedBox(width: 12),
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _FrostedIconButton(
-                  icon: Icons.shopping_bag_outlined,
-                  onTap: () {},
-                ),
-                Positioned(
-                  right: -2,
-                  top: -2,
-                  child: AnimatedBuilder(
-                    animation: cart,
-                    builder: (_, __) => cart.count == 0
-                        ? const SizedBox.shrink()
-                        : Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFB88C4A),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              '${cart.count}',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        centerTitle: true,
       ),
     );
   }
+}
 
-  Widget _buildEditorialCard(ColorScheme colorScheme) {
-    return Container(
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF282231), Color(0xFF16121D)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+class _Dots extends StatelessWidget {
+  const _Dots({required this.current, required this.total});
+
+  final int current;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        total,
+        (index) => AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: index == current ? const Color(0xFF8D493A) : const Color(0xFFD7C3B3),
+          ),
         ),
       ),
-      child: Stack(
+    );
+  }
+}
+
+class _CategoryCard extends StatelessWidget {
+  const _CategoryCard({required this.title, required this.image});
+
+  final String title;
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.brown.shade100),
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Align(
-            alignment: Alignment.centerRight,
+          Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(28),
-                bottomRight: Radius.circular(28),
-              ),
-              child: _NetImage(
-                url:
-                    'https://images.unsplash.com/photo-1530023367847-a683933f4175?auto=format&fit=crop&w=900&q=80',
-                width: 190,
-                fit: BoxFit.cover,
-                color: Colors.black.withOpacity(0.2),
-                colorBlendMode: BlendMode.darken,
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              child: Image.asset(image, fit: BoxFit.cover),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'The Luminous Atelier',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Reserve a private craftsmanship tour with our master artisans and discover bespoke brilliance.',
-                  style: TextStyle(
-                    color: colorScheme.onSurface.withOpacity(0.74),
-                    height: 1.4,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    gradient: _accentGradient,
-                  ),
-                  child: const Text(
-                    'Schedule atelier experience',
-                    style: TextStyle(
-                      letterSpacing: 0.6,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w600, color: Colors.grey.shade800),
             ),
           ),
         ],
@@ -433,164 +823,93 @@ class TanshiuqHome extends StatelessWidget {
   }
 }
 
-class _SectionHeading extends StatelessWidget {
-  const _SectionHeading({
-    required this.title,
-    required this.actionLabel,
-    required this.onTap,
-  });
+class _HighlightTile extends StatelessWidget {
+  const _HighlightTile({required this.title, required this.image});
 
   final String title;
-  final String actionLabel;
-  final VoidCallback onTap;
+  final String image;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.1,
-          ),
-        ),
-        GestureDetector(
-          onTap: onTap,
-          child: Row(
-            children: [
-              Text(
-                actionLabel,
-                style: TextStyle(
-                  color: colorScheme.primary,
-                  letterSpacing: 0.8,
-                ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: [
+          Image.asset(image, fit: BoxFit.cover, height: 160),
+          Container(
+            height: 160,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black.withOpacity(0.55)],
               ),
-              const SizedBox(width: 6),
-              Icon(
-                Icons.north_east,
-                size: 16,
-                color: colorScheme.primary,
-              ),
-            ],
+            ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _ProductCard extends StatelessWidget {
-  const _ProductCard({required this.product});
+class _ProductTile extends StatelessWidget {
+  const _ProductTile({required this.image, required this.title, required this.price, this.onTap});
 
-  final Product product;
+  final String image;
+  final String title;
+  final String price;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 900),
-            pageBuilder: (_, animation, __) => FadeTransition(
-              opacity: animation,
-              child: ProductDetailPage(product: product),
-            ),
-          ),
-        );
-      },
+      onTap: onTap,
       child: Container(
-        width: 220,
+        width: 170,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF241E2C), Color(0xFF161219)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.36),
-              blurRadius: 30,
-              offset: const Offset(0, 18),
-            ),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: Colors.brown.shade100),
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 4)),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Hero(
-              tag: 'product_${product.id}',
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(28),
-                  topRight: Radius.circular(28),
-                ),
-                child: AspectRatio(
-                  aspectRatio: 4 / 5,
-                  child: _NetImage(url: product.images.first, fit: BoxFit.cover),
-                ),
-              ),
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+              child: Image.asset(image, height: 110, width: double.infinity, fit: BoxFit.cover),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Text(
-                      product.category.toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 11,
-                        letterSpacing: 1.4,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
                   Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star_rounded,
-                        color: colorScheme.primary,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${product.rating.toStringAsFixed(1)} · ${product.reviewCount} reviews',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 6),
                   Text(
-                    '₹${product.price.toStringAsFixed(0)}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    price,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: const Color(0xFF8D493A), fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
@@ -602,205 +921,292 @@ class _ProductCard extends StatelessWidget {
   }
 }
 
-class _CollectionGrid extends StatelessWidget {
-  const _CollectionGrid({required this.collections});
-
-  final List<Map<String, String>> collections;
+class _LiveChatPill extends StatelessWidget {
+  const _LiveChatPill();
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisExtent: 220,
-        crossAxisSpacing: 18,
-        mainAxisSpacing: 18,
+    return RotatedBox(
+      quarterTurns: 3,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: const BoxDecoration(
+          color: Color(0xFF8D493A),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+          ),
+        ),
+        child: Text(
+          'Live Chat',
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600, letterSpacing: 1.1),
+        ),
       ),
-      itemCount: collections.length,
-      itemBuilder: (context, index) {
-        final collection = collections[index];
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.04)),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              _NetImage(
-                url: collection['image']!,
-                fit: BoxFit.cover,
-                color: Colors.black.withOpacity(0.25),
-                colorBlendMode: BlendMode.darken,
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Color(0xFF140F18)],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      collection['title']!,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      collection['subtitle']!,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFFE9DCC9),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      height: 36,
-                      width: 36,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: _accentGradient,
-                      ),
-                      child: const Icon(
-                        Icons.north_east,
-                        size: 18,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
 
-class _ConciergeCard extends StatelessWidget {
-  const _ConciergeCard({required this.colorScheme});
-
-  final ColorScheme colorScheme;
+class _SideDrawer extends StatelessWidget {
+  const _SideDrawer();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1E1922), Color(0xFF0F0C12)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-      ),
-      padding: const EdgeInsets.all(28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: _accentGradient,
-                ),
-                child: const Icon(
-                  Icons.auto_awesome,
-                  color: Colors.black,
-                ),
+    return Drawer(
+      backgroundColor: Colors.white,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, 6)),
+                ],
+                color: Colors.white,
               ),
-              const SizedBox(width: 16),
-              Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Tanshiuq White Glove',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: const Color(0xFF8D493A),
+                    radius: 24,
+                    child: Text(
+                      'Hi',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                     ),
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Personal stylists on your schedule',
-                    style: TextStyle(fontSize: 12, color: Color(0xFFC8B59D)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hi Guest!',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 4),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Text(
+                            'Login',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: const Color(0xFF8D493A), fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 120,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF7EEE4),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Get',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.grey.shade700),
+                        ),
+                        Text(
+                          '₹500 off',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: const Color(0xFF8D493A), fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          'on your first order',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.grey.shade700),
+                        ),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            width: 28,
+                            height: 28,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF8D493A),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-              const Spacer(),
-              Icon(
-                Icons.keyboard_arrow_right_rounded,
-                color: colorScheme.primary,
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Create your bespoke jewel story with a master stylist via virtual salon or at the Tanshiuq Atelier lounge.',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.68),
-              height: 1.4,
             ),
-          ),
-          const SizedBox(height: 20),
-          Wrap(
-            spacing: 14,
-            runSpacing: 12,
-            children: const [
-              _TagChip(label: 'Virtual styling'),
-              _TagChip(label: 'Try-on kits'),
-              _TagChip(label: 'Heritage upgrades'),
-              _TagChip(label: 'Worldwide delivery'),
-            ],
-          ),
-        ],
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 24),
+                children: const [
+                  _DrawerTile(title: 'My Profile', badge: 'New'),
+                  _DrawerTile(title: 'Order History'),
+                  _DrawerSection(title: 'Shop By'),
+                  _DrawerTile(title: 'All Jewellery'),
+                  _DrawerTile(title: 'Metal'),
+                  _DrawerTile(title: 'Collections'),
+                  _DrawerSection(title: 'Shop For'),
+                  _DrawerTile(title: 'Men'),
+                  _DrawerTile(title: 'Kids'),
+                  _DrawerTile(title: 'Jewellery Plans'),
+                  _DrawerTile(title: 'Gift Card'),
+                  _DrawerTile(title: 'Gold Rate'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _TagChip extends StatelessWidget {
-  const _TagChip({required this.label});
+class _DrawerTile extends StatelessWidget {
+  const _DrawerTile({required this.title, this.badge});
 
-  final String label;
+  final String title;
+  final String? badge;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withOpacity(0.12)),
-        color: Colors.white.withOpacity(0.05),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8F4EE),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.brown.shade100),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(color: Colors.grey.shade800, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  if (badge != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEFD8C7),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        badge!,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelSmall
+                            ?.copyWith(color: const Color(0xFF8D493A), fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right, color: Colors.grey.shade500),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _DrawerSection extends StatelessWidget {
+  const _DrawerSection({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
       child: Text(
-        label,
-        style: const TextStyle(fontSize: 12, letterSpacing: 0.6),
+        title,
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall
+            ?.copyWith(color: const Color(0xFF8D493A), fontWeight: FontWeight.w600, letterSpacing: 0.8),
+      ),
+    );
+  }
+}
+
+class _CategoryPoster extends StatelessWidget {
+  const _CategoryPoster({required this.title, required this.image});
+
+  final String title;
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(18),
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: [
+          AspectRatio(
+            aspectRatio: 4 / 5,
+            child: Image.asset(image, fit: BoxFit.cover),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black.withOpacity(0.6)],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key, required this.product});
-
-  final Product product;
+  const ProductDetailPage({super.key});
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -808,15 +1214,17 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   final PageController _galleryController = PageController();
-  int _currentPage = 0;
+  int _page = 0;
+
+  final List<String> _images = const ['images/1tg.png', 'images/2tg.png', 'images/3tg.png'];
 
   @override
   void initState() {
     super.initState();
     _galleryController.addListener(() {
-      final page = _galleryController.page?.round();
-      if (page != null && page != _currentPage) {
-        setState(() => _currentPage = page);
+      final next = _galleryController.page?.round();
+      if (next != null && next != _page) {
+        setState(() => _page = next);
       }
     });
   }
@@ -829,352 +1237,184 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final product = widget.product;
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
-        leading: _FrostedIconButton(
-          icon: Icons.chevron_left,
-          onTap: () => Navigator.of(context).pop(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black87),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          _FrostedIconButton(
-            icon: Icons.favorite_border,
-            onTap: () {},
+          IconButton(
+            icon: const Icon(Icons.favorite_border, color: Colors.black87),
+            onPressed: () {},
           ),
-          const SizedBox(width: 12),
-          _FrostedIconButton(
-            icon: Icons.share,
-            onTap: () {},
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.black87),
+            onPressed: () {},
           ),
-          const SizedBox(width: 16),
         ],
       ),
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF1B1520), Color(0xFF0F0D15)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 360,
-                child: PageView.builder(
-                  controller: _galleryController,
-                  itemCount: product.images.length,
-                  itemBuilder: (context, index) {
-                    final image = product.images[index];
-                    return Hero(
-                      tag: 'product_${product.id}',
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(32),
-                        child: _NetImage(
-                          url: image,
-                          fit: BoxFit.cover,
-                          color: Colors.black.withOpacity(0.1),
-                          colorBlendMode: BlendMode.darken,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 18),
-              _GalleryIndicator(count: product.images.length, index: _currentPage),
-              const SizedBox(height: 24),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 120),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  product.category.toUpperCase(),
-                                  style: TextStyle(
-                                    letterSpacing: 1.5,
-                                    fontSize: 12,
-                                    color: colorScheme.primary,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  product.name,
-                                  style: const TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.1,
-                                  ),
-                                ),
-                              ],
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 320,
+                    child: Stack(
+                      children: [
+                        PageView.builder(
+                          controller: _galleryController,
+                          itemCount: _images.length,
+                          itemBuilder: (_, index) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(28),
+                              child: Image.asset(_images[index], fit: BoxFit.cover),
                             ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                '₹${product.price.toStringAsFixed(0)}',
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.star_rounded,
-                                    size: 18,
-                                    color: colorScheme.primary,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    '${product.rating.toStringAsFixed(1)} • ${product.reviewCount} reviews',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white.withOpacity(0.7),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                        ),
+                        Positioned(
+                          bottom: 16,
+                          left: 0,
+                          right: 0,
+                          child: _Dots(current: _page, total: _images.length),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 72,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      itemCount: _images.length,
+                      itemBuilder: (context, index) {
+                        final selected = index == _page;
+                        return GestureDetector(
+                          onTap: () => _galleryController.animateToPage(
+                            index,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 18),
-                      Text(
-                        product.description,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.72),
-                          height: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 28),
-                      const Text(
-                        'Highlights',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.1,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      Column(
-                        children: product.highlights
-                            .map(
-                              (highlight) => Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 8,
-                                      width: 8,
-                                      margin: const EdgeInsets.only(top: 6),
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: _accentGradient,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        highlight,
-                                        style: TextStyle(
-                                          height: 1.4,
-                                          color: Colors.white.withOpacity(0.75),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                          child: Container(
+                            width: 70,
+                            margin: EdgeInsets.only(right: index == _images.length - 1 ? 0 : 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: selected ? const Color(0xFF8D493A) : Colors.grey.shade300,
+                                width: selected ? 2 : 1,
                               ),
-                            )
-                            .toList(),
-                      ),
-                      const SizedBox(height: 28),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: Colors.white.withOpacity(0.08)),
-                          color: Colors.white.withOpacity(0.02),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.asset(_images[index], fit: BoxFit.cover),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Round Gold Jali Work Stud Earrings',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(height: 8),
+                        Text(
+                          'SKU ID : 501720SKIAAA002JA002278',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.grey.shade600, letterSpacing: 0.6),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
                           children: [
-                            const Text(
-                              'Materiality',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            Text(
+                              '₹ 12 399',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF8D493A)),
                             ),
-                            const SizedBox(height: 14),
-                            ...product.materials.entries.map(
-                              (entry) => Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 38,
-                                      height: 38,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: _accentGradient,
-                                      ),
-                                      child: const Icon(
-                                        Icons.diamond,
-                                        size: 18,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            entry.key,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            entry.value,
-                                            style: TextStyle(
-                                              color: Colors.white.withOpacity(0.68),
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            const SizedBox(width: 12),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                'Price Breakup',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: const Color(0xFF8D493A), fontWeight: FontWeight.w600),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 28),
-                      const Text(
-                        'Tanshiuq Muse Story',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _ActionChip(onTap: () {}, label: 'View Similar', icon: Icons.filter_none),
+                            _ActionChip(onTap: () {}, label: 'Try It On', icon: Icons.camera_alt_outlined),
+                            _IconCircle(icon: Icons.share, onTap: () {}),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 14),
-                      Text(
-                        product.story,
-                        style: TextStyle(
-                          height: 1.5,
-                          color: Colors.white.withOpacity(0.72),
+                        const SizedBox(height: 24),
+                        const Divider(),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Product Description',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 12),
+                        Text(
+                          'Finely crafted round stud earrings with intricate jali work that adds elegance to your festive look.',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.grey.shade700, height: 1.5),
+                        ),
+                        const SizedBox(height: 48),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.fromLTRB(24, 18, 24, 32),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF161119), Color(0xFF0E0B12)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black45,
-              blurRadius: 24,
-              offset: Offset(0, -12),
-            )
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: Colors.white.withOpacity(0.08)),
-                  color: Colors.white.withOpacity(0.05),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text(
-                      'Estimated Delivery',
-                      style: TextStyle(fontSize: 11, letterSpacing: 0.6),
-                    ),
-                    SizedBox(height: 6),
-                    Text(
-                      '5-7 days, insured shipping',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
-            const SizedBox(width: 16),
-            _AddToCartButton(product: product),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
-}
-
-class _GalleryIndicator extends StatelessWidget {
-  const _GalleryIndicator({required this.count, required this.index});
-
-  final int count;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        count,
-        (i) => AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          height: 4,
-          width: i == index ? 40 : 18,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            gradient: i == index ? _accentGradient : null,
-            color: i == index
-                ? null
-                : Colors.white.withOpacity(0.25),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF8D493A),
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          ),
+          onPressed: () {},
+          child: const Text(
+            'Add To Cart',
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
           ),
         ),
       ),
@@ -1182,134 +1422,34 @@ class _GalleryIndicator extends StatelessWidget {
   }
 }
 
-class _FrostedIconButton extends StatelessWidget {
-  const _FrostedIconButton({required this.icon, required this.onTap});
+class _ActionChip extends StatelessWidget {
+  const _ActionChip({required this.onTap, required this.label, required this.icon});
 
-  final IconData icon;
   final VoidCallback onTap;
+  final String label;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 42,
-        height: 42,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: Colors.white.withOpacity(0.08),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade300),
+          color: Colors.white,
         ),
-        child: Icon(icon, size: 20, color: Colors.white),
-      ),
-    );
-  }
-}
-
-class _NetImage extends StatelessWidget {
-  const _NetImage({
-    required this.url,
-    this.fit,
-    this.color,
-    this.colorBlendMode,
-    this.width,
-    this.height,
-  });
-
-  final String url;
-  final BoxFit? fit;
-  final Color? color;
-  final BlendMode? colorBlendMode;
-  final double? width;
-  final double? height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.network(
-      url,
-      fit: fit,
-      color: color,
-      colorBlendMode: colorBlendMode,
-      width: width,
-      height: height,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Container(
-          color: const Color(0x11111111),
-          alignment: Alignment.center,
-          child: const SizedBox(
-            height: 24,
-            width: 24,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        );
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
-          color: const Color(0x22111111),
-          alignment: Alignment.center,
-          child: const Icon(Icons.broken_image_outlined, color: Colors.white54),
-        );
-      },
-    );
-  }
-}
-
-class _AddToCartButton extends StatelessWidget {
-  const _AddToCartButton({required this.product});
-
-  final Product product;
-
-  @override
-  Widget build(BuildContext context) {
-    final cart = CartProvider.of(context);
-    return GestureDetector(
-      onTap: () {
-        cart.add(1);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: const Color(0xFF201A24),
-            content: Row(
-              children: [
-                const Icon(Icons.check_circle, color: Color(0xFFB88C4A)),
-                const SizedBox(width: 12),
-                Expanded(child: Text('Added "${product.name}" to cart.')),
-              ],
-            ),
-            action: SnackBarAction(
-              label: 'VIEW',
-              textColor: const Color(0xFFB88C4A),
-              onPressed: () {},
-            ),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: _accentGradient,
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFB88C4A).withOpacity(0.45),
-              blurRadius: 24,
-              offset: const Offset(0, 12),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
         child: Row(
-          children: const [
-            Icon(Icons.shopping_bag, color: Colors.black),
-            SizedBox(width: 10),
+          children: [
+            Icon(icon, size: 18, color: const Color(0xFF8D493A)),
+            const SizedBox(width: 8),
             Text(
-              'Add to Cart',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.6,
-                color: Colors.black,
-              ),
+              label,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: const Color(0xFF8D493A), fontWeight: FontWeight.w600),
             ),
           ],
         ),
